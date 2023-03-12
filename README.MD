@@ -1,4 +1,4 @@
-# Groupwork 2 (backend)
+# Groupwork 2(backend)
 
 You can find the **frontend** part in **[this](https://github.com/CCornez/groupwork2-frontend)** repository
 
