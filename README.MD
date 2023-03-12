@@ -1,6 +1,6 @@
 # Groupwork 2(backend)
 
-You can find the **frontend** part in **[this](https://github.com/CCornez/groupwork2-frontend)** repository
+You can find the **frontend** part  **[this](https://github.com/CCornez/groupwork2-frontend)** 
 
 ## instruction
 
