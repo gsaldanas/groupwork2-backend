@@ -4,7 +4,7 @@ You can find the **frontend** part in **[this](https://github.com/CCornez/groupw
 
 ## instruction
 
-<details>
+<details></details>
   <summary>Backend</summary>
   
   * Custom api with php
