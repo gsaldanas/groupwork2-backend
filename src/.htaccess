@@ -1,0 +1,4 @@
+Options +FollowSymLinks
+RewriteEngine On
+RewriteRule ^api/(.*)/(.*)/(.*)$ api.php?version=$1&endpoint=$2&qs=$3 [L]
+RewriteRule ^api/(.*)/(.*)$ api.php?version=$1&endpoint=$2 [L]
