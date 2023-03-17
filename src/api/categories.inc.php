@@ -7,7 +7,7 @@ if (!in_array($args['endpoint'], $endpoints)) {
     return;
 }
 
-// your code here
+// your switch here
 
 print '<h1>categories.inc.php file :) </h1><br /><pre>';
 print_r($args);
