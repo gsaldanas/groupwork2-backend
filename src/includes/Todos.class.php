@@ -20,4 +20,14 @@ class Todos
         $sql = "SELECT * FROM todos WHERE id=:id";
         return $this->db->executeQuery($sql, ['id' => $id]);
     }
+    public function add($data)
+    {
+        $keys = array_keys($data);
+        $values = array_values($data);
+        print_r($keys);
+        print_r($values);
+        print_r($data);
+        // $sql = "SELECT * FROM todos WHERE id=:id";
+        // return $this->db->executeQuery($sql, $data);
+    }
 }
