@@ -2,13 +2,31 @@
 require_once "includes/Todos.class.php";
 
 $args = $_REQUEST;
+$endpoint = $args['endpoint'];
 $endpoints = ["todos", "todo"];
-if (!in_array($args['endpoint'], $endpoints)) {
+
+// TODO: documentation
+
+if (!in_array($endpoint, $endpoints)) {
     return;
 }
 
-// your switch here
-
-print '<h1>todos.inc.php file :) </h1><br /><pre>';
-print_r($args);
-print '</pre>';
+switch ($endpoint) {
+    case 'todos':
+        $response->status = 'success';
+        $response->test = 'todos';
+        $db = new Db();
+        $todos = new Todos($db);
+        $response->todos = $todos->getAll();
+        break;
+    case 'todo':
+        // TODO: validation ;)
+        $response->status = 'success';
+        $response->test = 'todo';
+        $db = new Db();
+        $todos = new Todos($db);
+        $response->todos = $todos->getById($args['id']);
+        break;
+    default:
+        break;
+}
