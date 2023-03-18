@@ -15,4 +15,9 @@ class TodoLists
         $sql = "SELECT * FROM todo_lists LIMIT $limit OFFSET $offset";
         return $this->db->executeQuery($sql, $filters);
     }
+    public function getById($id)
+    {
+        $sql = "SELECT * FROM todo_lists WHERE id=:id";
+        return $this->db->executeQuery($sql, ['id' => $id]);
+    }
 }
