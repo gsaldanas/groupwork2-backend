@@ -22,12 +22,10 @@ class Todos
     }
     public function add($data)
     {
-        $keys = array_keys($data);
-        $values = array_values($data);
-        print_r($keys);
-        print_r($values);
-        print_r($data);
-        // $sql = "SELECT * FROM todos WHERE id=:id";
-        // return $this->db->executeQuery($sql, $data);
+        //  TODO: even more validation!
+        $keys = join(", ", array_keys($data));
+        $values =  '"' . join('", "', array_values($data)) . '"';
+        $sql = "INSERT INTO todos ($keys) VALUES ($values)";
+        $this->db->executeQuery($sql);
     }
 }
