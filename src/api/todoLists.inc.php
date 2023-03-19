@@ -27,10 +27,9 @@ switch ($endpoint) {
     case 'list':
         switch ($_SERVER['REQUEST_METHOD']) {
             case 'POST':
-                $data = $_POST;
                 $db = new Db();
                 $lists = new TodoLists($db);
-                $created = $lists->add($data);
+                $created = $lists->add($_POST);
 
                 $response->status = 'success';
                 $response->message = 'List added';
