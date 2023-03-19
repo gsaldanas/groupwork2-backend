@@ -20,4 +20,21 @@ class TodoLists
         $sql = "SELECT * FROM todo_lists WHERE id=:id";
         return $this->db->executeQuery($sql, ['id' => $id]);
     }
+    public function add($data)
+    {
+        $keys = array_keys($data);
+        $cols = implode(', ', $keys);
+
+
+        $values = array_map(function ($key) {
+            return ':' . $key;
+        }, $keys);
+        $values = implode(', ', $values);
+
+        // print_r($cols);
+        // print_r($values);
+        // print_r($data);
+        $sql = "INSERT INTO todo_lists($cols) VALUES ($values)";
+        return $this->db->executeQuery($sql, $data);
+    }
 }

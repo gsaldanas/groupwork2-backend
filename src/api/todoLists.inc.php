@@ -25,29 +25,44 @@ switch ($endpoint) {
         break;
 
     case 'list':
-        // Ensure that the 'id' parameter is set and is a positive integer
-        if (!isset($args['id']) || !ctype_digit($args['id']) || $args['id'] <= 0) {
-            $response->status = 'error';
-            $response->message = 'Invalid ID parameter';
-            return;
+        switch ($_SERVER['REQUEST_METHOD']) {
+            case 'POST':
+                $db = new Db();
+                $lists = new TodoLists($db);
+                $created = $lists->add($_POST);
+
+                $response->status = 'success';
+                $response->message = 'List added';
+
+                break;
+            default:
+                // Ensure that the 'id' parameter is set and is a positive integer
+                if (!isset($args['id']) || !ctype_digit($args['id']) || $args['id'] <= 0) {
+                    $response->status = 'error';
+                    $response->message = 'Invalid ID parameter';
+                    http_response_code(404);
+                    return;
+                }
+
+                $db = new Db();
+                $lists = new TodoLists($db);
+                $list = $lists->getById($args['id']);
+
+                // Check if the list exists
+                if (!$list) {
+                    $response->status = 'error';
+                    $response->message = 'List not found';
+                    http_response_code(404);
+                    return;
+                }
+
+                $response->status = 'success';
+                $response->test = 'list';
+                $response->lists = $list;
+                break;
         }
-
-        $db = new Db();
-        $lists = new TodoLists($db);
-        $list = $lists->getById($args['id']);
-
-        // Check if the list exists
-        if (!$list) {
-            $response->status = 'error';
-            $response->message = 'List not found';
-            return;
-        }
-
-        $response->status = 'success';
-        $response->test = 'list';
-        $response->lists = $list;
-        break;
 
     default:
+
         break;
 }
