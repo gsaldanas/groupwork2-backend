@@ -28,4 +28,15 @@ class Todos
         $sql = "INSERT INTO todos ($keys) VALUES ($values)";
         $this->db->executeQuery($sql);
     }
+    public function update($id, $data)
+    {
+        //  TODO: even more validation!!
+        $updateColumns = $data;
+        array_walk($updateColumns, function (&$value, $key) {
+            $value = "$key = '$value'";
+        });
+        $updateColumns = join(', ', array_values($updateColumns));
+        $sql = "UPDATE todos SET $updateColumns, updated_at = NOW() WHERE id = $id";
+        $this->db->executeQuery($sql);
+    }
 }
