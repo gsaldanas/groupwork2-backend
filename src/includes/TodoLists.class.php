@@ -38,4 +38,3 @@ class TodoLists
         return $this->db->executeQuery($sql, $data);
     }
 }
-header('Content-Type: application/json; charset=utf-8');
