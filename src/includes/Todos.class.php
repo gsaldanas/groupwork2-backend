@@ -39,4 +39,10 @@ class Todos
         $sql = "UPDATE todos SET $updateColumns, updated_at = NOW() WHERE id = $id";
         $this->db->executeQuery($sql);
     }
+    public function delete($id)
+    {
+        //  TODO: even more validation!!!
+        $sql = "UPDATE todos SET is_visible = 0, updated_at = NOW() WHERE id = $id";
+        $this->db->executeQuery($sql);
+    }
 }
