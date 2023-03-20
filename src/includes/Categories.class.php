@@ -28,4 +28,15 @@ class Categories
         $sql = "INSERT INTO categories ($keys) VALUES ($values)";
         $this->db->executeQuery($sql);
     }
+    public function update($id, $data)
+    {
+        //  TODO: even more validation!!
+        $updateColumns = $data;
+        array_walk($updateColumns, function (&$value, $key) {
+            $value = "$key = '$value'";
+        });
+        $updateColumns = join(', ', array_values($updateColumns));
+        $sql = "UPDATE categories SET $updateColumns WHERE id = $id";
+        $this->db->executeQuery($sql);
+    }
 }

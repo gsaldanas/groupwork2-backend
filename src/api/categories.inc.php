@@ -41,6 +41,18 @@ switch ($endpoint) {
                 $response->status = 'success';
                 $response->message = 'Category ' . $params['title'] . " has been added";
                 break;
+            case 'PATCH':
+                // TODO: validation :)
+                $db = new Db();
+                $categories = new Categories($db);
+
+                // get PATCH data in JSON format
+                $params = jsonDecodeInput();
+                $categories->update($args['id'], $params);
+
+                $response->status = 'success';
+                $response->message = $params['title'] . " has been updated";
+                break;
             default:
                 // TODO: validation :P
         }
