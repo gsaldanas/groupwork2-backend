@@ -39,4 +39,10 @@ class Categories
         $sql = "UPDATE categories SET $updateColumns WHERE id = $id";
         $this->db->executeQuery($sql);
     }
+    public function delete($id)
+    {
+        //  TODO: even more validation!!!
+        $sql = "DELETE FROM categories WHERE id = $id";
+        $this->db->executeQuery($sql);
+    }
 }
