@@ -29,6 +29,18 @@ switch ($endpoint) {
                 $response->categories = $categories->getById($args['id']);
                 $response->status = 'success';
                 break;
+            case 'POST':
+                // TODO: validation :D
+                $db = new Db();
+                $categories = new Categories($db);
+
+                // get POST data in JSON format
+                $params = jsonDecodeInput();
+                $categories->add($params);
+
+                $response->status = 'success';
+                $response->message = 'Category ' . $params['title'] . " has been added";
+                break;
             default:
                 // TODO: validation :P
         }
