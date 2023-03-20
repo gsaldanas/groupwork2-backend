@@ -12,12 +12,12 @@ class Todos
 
     public function getAll()
     {
-        $sql = "SELECT * FROM todos";
+        $sql = "SELECT * FROM todos WHERE is_visible = 1";
         return $this->db->executeQuery($sql);
     }
     public function getById($id)
     {
-        $sql = "SELECT * FROM todos WHERE id=:id";
+        $sql = "SELECT * FROM todos WHERE id=:id AND is_visible = 1";
         return $this->db->executeQuery($sql, ['id' => $id]);
     }
     public function add($data)
@@ -37,6 +37,12 @@ class Todos
         });
         $updateColumns = join(', ', array_values($updateColumns));
         $sql = "UPDATE todos SET $updateColumns, updated_at = NOW() WHERE id = $id";
+        $this->db->executeQuery($sql);
+    }
+    public function delete($id)
+    {
+        //  TODO: even more validation!!!
+        $sql = "UPDATE todos SET is_visible = 0, updated_at = NOW() WHERE id = $id";
         $this->db->executeQuery($sql);
     }
 }

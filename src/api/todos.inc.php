@@ -55,7 +55,16 @@ switch ($endpoint) {
                 $todos->update($args['id'], $params);
 
                 $response->status = 'success';
-                $response->message = $params['title'] . " has been added updated";
+                $response->message = $params['title'] . " has been updated";
+                break;
+            case 'DELETE':
+                // TODO: validation :)
+                $db = new Db();
+                $todos = new Todos($db);
+
+                $todos->delete($args['id']);
+                $response->status = 'success';
+                $response->message = $args['id'] . " has been deleted";
                 break;
             default:
                 // TODO: validation :P
