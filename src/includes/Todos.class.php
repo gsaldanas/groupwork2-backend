@@ -12,12 +12,12 @@ class Todos
 
     public function getAll()
     {
-        $sql = "SELECT * FROM todos";
+        $sql = "SELECT * FROM todos WHERE is_visible = 1";
         return $this->db->executeQuery($sql);
     }
     public function getById($id)
     {
-        $sql = "SELECT * FROM todos WHERE id=:id";
+        $sql = "SELECT * FROM todos WHERE id=:id AND is_visible = 1";
         return $this->db->executeQuery($sql, ['id' => $id]);
     }
     public function add($data)
