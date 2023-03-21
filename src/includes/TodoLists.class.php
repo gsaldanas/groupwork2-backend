@@ -44,4 +44,10 @@ class TodoLists
         $sql = "UPDATE todo_lists SET $updateColumns, updated_at = NOW() WHERE id = $id";
         $this->db->executeQuery($sql);
     }
+    public function delete($id)
+    {
+        //  TODO: even more validation!!!
+        $sql = "UPDATE todo_lists SET is_visible = 0, updated_at = NOW() WHERE id = $id";
+        $this->db->executeQuery($sql);
+    }
 }
