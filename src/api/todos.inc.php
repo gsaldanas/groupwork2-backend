@@ -15,10 +15,10 @@ if (!in_array($endpoint, $allowedEndpoints)) {
 switch ($endpoint) {
     case 'todos':
         // TODO: validation :O
-        $response->status = 'success';
-        $response->test = 'todos';
         $db = new Db();
         $todos = new Todos($db);
+
+        $response->status = 'success';
         $response->todos = $todos->getAll();
         break;
     case 'todo':
@@ -27,6 +27,7 @@ switch ($endpoint) {
                 // TODO: validation ;)
                 $db = new Db();
                 $todos = new Todos($db);
+
                 $response->todos = $todos->getById($args['id']);
                 $response->status = 'success';
                 break;

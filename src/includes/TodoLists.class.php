@@ -30,12 +30,19 @@ class TodoLists
             return ':' . $key;
         }, $keys);
         $values = implode(', ', $values);
-
-        // print_r($cols);
-        // print_r($values);
-        // print_r($data);
         $sql = "INSERT INTO todo_lists($cols) VALUES ($values)";
         return $this->db->executeQuery($sql, $data);
+    }
+    public function update($id, $data)
+    {
+        //  TODO: e validation!!
+        $updateColumns = $data;
+        array_walk($updateColumns, function (&$value, $key) {
+            $value = "$key = '$value'";
+        });
+        $updateColumns = join(', ', array_values($updateColumns));
+        $sql = "UPDATE todo_lists SET $updateColumns, updated_at = NOW() WHERE id = $id";
+        $this->db->executeQuery($sql);
     }
     public function delete($id)
     {

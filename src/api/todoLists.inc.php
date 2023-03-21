@@ -1,5 +1,7 @@
 <?php
 require_once "includes/TodoLists.class.php";
+require_once "includes/helpers.inc.php";
+
 
 $args = $_REQUEST;
 $endpoint = $args['endpoint'];
@@ -34,6 +36,18 @@ switch ($endpoint) {
                 $response->status = 'success';
                 $response->message = 'List added';
 
+                break;
+            case 'PATCH':
+                // TODO: validation :)
+                $db = new Db();
+                $lists = new TodoLists($db);
+
+                // get PATCH data in JSON format
+                $params = jsonDecodeInput();
+                $lists->update($args['id'], $params);
+
+                $response->status = 'success';
+                $response->message = $params['title'] . " has been added updated";
                 break;
             case 'DELETE':
                 // TODO: validation :)
