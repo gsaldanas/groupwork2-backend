@@ -10,9 +10,14 @@ class Categories
         $this->db = $db;
     }
 
-    public function getAll($offset = 0, $limit = 50, $filters = [])
+    public function getAll()
     {
-        $sql = "SELECT * FROM categories LIMIT $limit OFFSET $offset";
-        return $this->db->executeQuery($sql, $filters);
+        $sql = "SELECT * FROM categories";
+        return $this->db->executeQuery($sql);
+    }
+    public function getById($id)
+    {
+        $sql = "SELECT * FROM categories WHERE id=:id";
+        return $this->db->executeQuery($sql, ['id' => $id]);
     }
 }

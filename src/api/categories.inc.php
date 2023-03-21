@@ -3,12 +3,36 @@ require_once "includes/Categories.class.php";
 
 $args = $_REQUEST;
 $endpoints = ["categories", "category"];
+
+// TODO: documentation
+
 if (!in_array($args['endpoint'], $endpoints)) {
     return;
 }
 
-// your switch here
+switch ($endpoint) {
+    case 'categories':
+        // TODO: validation :O
+        $db = new Db();
+        $categories = new Categories($db);
 
-print '<h1>categories.inc.php file :) </h1><br /><pre>';
-print_r($args);
-print '</pre>';
+        $response->status = 'success';
+        $response->categories = $categories->getAll();
+        break;
+    case 'category':
+        switch ($_SERVER['REQUEST_METHOD']) {
+            case 'GET':
+                // TODO: validation ;)
+                $db = new Db();
+                $categories = new Categories($db);
+
+                $response->categories = $categories->getById($args['id']);
+                $response->status = 'success';
+                break;
+            default:
+                // TODO: validation :P
+        }
+        break;
+    default:
+        break;
+}
