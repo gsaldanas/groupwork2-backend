@@ -37,4 +37,10 @@ class TodoLists
         $sql = "INSERT INTO todo_lists($cols) VALUES ($values)";
         return $this->db->executeQuery($sql, $data);
     }
+    public function delete($id)
+    {
+        //  TODO: even more validation!!!
+        $sql = "UPDATE todo_lists SET is_visible = 0, updated_at = NOW() WHERE id = $id";
+        $this->db->executeQuery($sql);
+    }
 }

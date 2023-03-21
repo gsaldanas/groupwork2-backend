@@ -35,6 +35,15 @@ switch ($endpoint) {
                 $response->message = 'List added';
 
                 break;
+            case 'DELETE':
+                // TODO: validation :)
+                $db = new Db();
+                $lists = new TodoLists($db);
+
+                $lists->delete($args['id']);
+                $response->status = 'success';
+                $response->message = $args['id'] . " has been deleted";
+                break;
             default:
                 // Ensure that the 'id' parameter is set and is a positive integer
                 if (!isset($args['id']) || !ctype_digit($args['id']) || $args['id'] <= 0) {
