@@ -41,6 +41,27 @@ switch ($endpoint) {
                 $response->status = 'success';
                 $response->message = 'Category ' . $params['title'] . " has been added";
                 break;
+            case 'PATCH':
+                // TODO: validation :)
+                $db = new Db();
+                $categories = new Categories($db);
+
+                // get PATCH data in JSON format
+                $params = jsonDecodeInput();
+                $categories->update($args['id'], $params);
+
+                $response->status = 'success';
+                $response->message = $params['title'] . " has been updated";
+                break;
+            case 'DELETE':
+                // TODO: validation :)
+                $db = new Db();
+                $categories = new Categories($db);
+
+                $categories->delete($args['id']);
+                $response->status = 'success';
+                $response->message = $args['id'] . " has been deleted";
+                break;
             default:
                 // TODO: validation :P
         }
