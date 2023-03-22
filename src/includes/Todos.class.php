@@ -10,10 +10,24 @@ class Todos
         $this->db = $db;
     }
 
-    public function getAll()
+    private function buildWhere($filters)
     {
-        $sql = "SELECT * FROM todos WHERE is_visible = 1";
-        return $this->db->executeQuery($sql);
+        $where = '';
+        if (count($filters)) {
+            $where = [];
+            foreach ($filters as $key => $value) {
+                $where[] = "$key = :$key";
+            }
+            $where = 'WHERE ' . implode(' AND ', $where);
+        }
+        return $where;
+    }
+
+    public function getAll($filter = [])
+    {
+        $where = $this->buildWhere($filter);
+        $sql = "SELECT * FROM todos $where";
+        return $this->db->executeQuery($sql, $filter);
     }
     public function getById($id)
     {

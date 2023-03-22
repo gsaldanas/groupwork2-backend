@@ -15,11 +15,20 @@ if (!in_array($endpoint, $allowedEndpoints)) {
 switch ($endpoint) {
     case 'todos':
         // TODO: validation :O
+
         $db = new Db();
         $todos = new Todos($db);
 
+        // init filter
+        $filter = ['is_visible' => 1];
+
+        // add filter list id to init filter (if exists)
+        if (isset($args['id'])) {
+            $filter = array_merge($filter, ['todo_lists_id' => $args['id']]);
+        }
+
+        $response->todos = $todos->getAll($filter);
         $response->status = 'success';
-        $response->todos = $todos->getAll();
         break;
     case 'todo':
         switch ($_SERVER['REQUEST_METHOD']) {
