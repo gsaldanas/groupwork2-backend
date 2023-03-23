@@ -22,9 +22,20 @@ class TodoLists
     }
     public function add($data)
     {
+        // Check if all required fields are present in the data
+        $requiredFields = ['title'];
+        if (array_diff($requiredFields, array_keys($data))) {
+            throw new Exception('Missing required fields');
+        }
+
+        // Check that all fields in $data are allowed
+        $allowedFields = ['title'];
+        if (array_diff(array_keys($data), $allowedFields)) {
+            throw new Exception('Invalid fields in data');
+        }
+
         $keys = array_keys($data);
         $cols = implode(', ', $keys);
-
 
         $values = array_map(function ($key) {
             return ':' . $key;
@@ -33,9 +44,21 @@ class TodoLists
         $sql = "INSERT INTO todo_lists($cols) VALUES ($values)";
         return $this->db->executeQuery($sql, $data);
     }
+
+
     public function update($id, $data)
     {
-        //  TODO: e validation!!
+        // Ensure id is a valid integer
+        if (!filter_var($id, FILTER_VALIDATE_INT)) {
+            throw new InvalidArgumentException('Invalid id');
+        }
+
+        // Check that all fields in $data are allowed
+        $allowedFields = ['title'];
+        if (array_diff(array_keys($data), $allowedFields)) {
+            throw new Exception('Invalid fields in data');
+        }
+
         $updateColumns = $data;
         array_walk($updateColumns, function (&$value, $key) {
             $value = "$key = '$value'";
@@ -44,6 +67,7 @@ class TodoLists
         $sql = "UPDATE todo_lists SET $updateColumns, updated_at = NOW() WHERE id = $id";
         $this->db->executeQuery($sql);
     }
+
     public function delete($id)
     {
         //  TODO: even more validation!!!

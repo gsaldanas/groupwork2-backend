@@ -7,14 +7,17 @@ $args = $_REQUEST;
 $endpoint = $args['endpoint'];
 $endpoints = ["lists", "list"];
 if (!in_array($endpoint, $endpoints)) {
+    http_response_code(400);
+
     return;
 }
-// TODO: documentation
+
 
 switch ($endpoint) {
     case 'lists':
         // Ensure that the request method is GET
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+            http_response_code(400);
             $response->status = 'error';
             $response->message = 'Invalid request method';
             return;
@@ -33,8 +36,16 @@ switch ($endpoint) {
                 $lists = new TodoLists($db);
                 // get POST data in JSON format
                 $params = jsonDecodeInput();
+
+                // validate required fields
+                if (!isset($params['title'])  || empty(trim($params['title']))) {
+                    http_response_code(400);
+                    $response->status = 'error';
+                    $response->message = 'Title is required';
+                    break;
+                }
+
                 $lists->add($params);
-                
                 $response->status = 'success';
                 $response->message = 'List added';
 
