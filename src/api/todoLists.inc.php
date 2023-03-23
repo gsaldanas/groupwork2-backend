@@ -31,8 +31,10 @@ switch ($endpoint) {
             case 'POST':
                 $db = new Db();
                 $lists = new TodoLists($db);
-                $created = $lists->add($_POST);
-
+                // get POST data in JSON format
+                $params = jsonDecodeInput();
+                $lists->add($params);
+                
                 $response->status = 'success';
                 $response->message = 'List added';
 
