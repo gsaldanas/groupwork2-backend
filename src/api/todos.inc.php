@@ -50,10 +50,10 @@ switch ($endpoint) {
                 $todos->add($params);
 
                 // TODO: add api call to get list name
-                $listName = $params['todo_lists_id'];
+                // $listName = $params['todo_lists_id'];
 
                 $response->status = 'success';
-                $response->message = $params['title'] . " has been added to " . $listName;
+                $response->message = "has been added";
                 break;
             case 'PATCH':
                 // TODO: validation :)
@@ -65,7 +65,7 @@ switch ($endpoint) {
                 $todos->update($args['id'], $params);
 
                 $response->status = 'success';
-                $response->message = $params['title'] . " has been updated";
+                $response->message = "has been updated";
                 break;
             case 'DELETE':
                 // TODO: validation :)
