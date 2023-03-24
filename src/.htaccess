@@ -1,0 +1,6 @@
+Options +FollowSymLinks
+RewriteEngine On
+RewriteRule ^api/(.*)/(.*)/(.*)$ api.php?version=$1&endpoint=$2&id=$3 [L]
+
+# The QSA flag will append any query string parameters to the rewritten URL
+RewriteRule ^api/(.*)/(.*)$ api.php?version=$1&endpoint=$2 [L,QSA]
