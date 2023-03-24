@@ -36,12 +36,29 @@ class Todos
     }
     public function add($data)
     {
-        //  TODO: even more validation!
+        // Define the valid fields for the todos table
+        $validFields = ['title','todo_lists_id'];
+    
+        // Check that all keys in $data are valid fields
+        $invalidFields = array_diff(array_keys($data), $validFields);
+        if (!empty($invalidFields)) {
+            throw new InvalidArgumentException('Invalid field(s) provided: ' . implode(', ', $invalidFields));
+        }
+    
+        // Check that all required fields are present
+        $requiredFields = ['title'];
+        $missingFields = array_diff($requiredFields, array_keys($data));
+        if (!empty($missingFields)) {
+            throw new InvalidArgumentException('Missing required field(s): ' . implode(', ', $missingFields));
+        }
+    
+        // Insert the data into the database
         $keys = join(", ", array_keys($data));
         $values =  '"' . join('", "', array_values($data)) . '"';
         $sql = "INSERT INTO todos ($keys) VALUES ($values)";
         $this->db->executeQuery($sql);
     }
+    
     public function update($id, $data)
     {
         //  TODO: even more validation!!
