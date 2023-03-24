@@ -12,29 +12,34 @@ class TodoLists
 
     public function getAll($offset = 0, $limit = 50, $filters = [])
     {
-        $sql = "SELECT * FROM todo_lists LIMIT $limit OFFSET $offset";
+        $sql = "SELECT * FROM todo_lists  WHERE is_visible = 1 LIMIT $limit OFFSET $offset";
         return $this->db->executeQuery($sql, $filters);
     }
     public function getById($id)
     {
-        $sql = "SELECT * FROM todo_lists WHERE id=:id";
+        $sql = "SELECT * FROM todo_lists WHERE id=:id AND is_visible = 1";
         return $this->db->executeQuery($sql, ['id' => $id]);
     }
     public function add($data)
     {
+        $keys = array_keys($data);
+
         // Check if all required fields are present in the data
         $requiredFields = ['title'];
-        if (array_diff($requiredFields, array_keys($data))) {
+        if (array_diff($requiredFields, $keys)) {
             throw new Exception('Missing required fields');
         }
 
         // Check that all fields in $data are allowed
         $allowedFields = ['title'];
-        if (array_diff(array_keys($data), $allowedFields)) {
+        if (array_diff($keys, $allowedFields)) {
             throw new Exception('Invalid fields in data');
         }
 
-        $keys = array_keys($data);
+        if (!is_string($data['title'])) {
+            throw new Exception('Invalid type on title field');
+        }
+
         $cols = implode(', ', $keys);
 
         $values = array_map(function ($key) {
@@ -54,9 +59,15 @@ class TodoLists
         }
 
         // Check that all fields in $data are allowed
-        $allowedFields = ['title'];
+        $allowedFields = ['title', 'description'];
         if (array_diff(array_keys($data), $allowedFields)) {
             throw new Exception('Invalid fields in data');
+        }
+
+        if ((isset($data['title']) && !is_string($data['title'])) ||
+            (isset($data['description']) && !is_string($data['description']))
+        ) {
+            throw new Exception('Invalid field type');
         }
 
         $updateColumns = $data;
@@ -64,14 +75,13 @@ class TodoLists
             $value = "$key = '$value'";
         });
         $updateColumns = join(', ', array_values($updateColumns));
-        $sql = "UPDATE todo_lists SET $updateColumns, updated_at = NOW() WHERE id = $id";
-        $this->db->executeQuery($sql);
+        $sql = "UPDATE todo_lists SET $updateColumns, updated_at = NOW() WHERE id=:id";
+        $this->db->executeQuery($sql, ['id' => $id]);
     }
 
     public function delete($id)
     {
-        //  TODO: even more validation!!!
-        $sql = "UPDATE todo_lists SET is_visible = 0, updated_at = NOW() WHERE id = $id";
-        $this->db->executeQuery($sql);
+        $sql = "UPDATE todo_lists SET is_visible = 0, updated_at = NOW() WHERE id=:id";
+        $this->db->executeQuery($sql, ['id' => $id]);
     }
 }

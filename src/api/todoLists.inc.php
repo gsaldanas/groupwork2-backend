@@ -8,7 +8,6 @@ $endpoint = $args['endpoint'];
 $endpoints = ["lists", "list"];
 if (!in_array($endpoint, $endpoints)) {
     http_response_code(400);
-
     return;
 }
 
@@ -22,56 +21,15 @@ switch ($endpoint) {
             $response->message = 'Invalid request method';
             return;
         }
-        $response->status = 'success';
-        $response->test = 'lists';
         $db = new Db();
         $lists = new TodoLists($db);
         $response->lists = $lists->getAll();
+        $response->status = 'success';
         break;
 
     case 'list':
         switch ($_SERVER['REQUEST_METHOD']) {
-            case 'POST':
-                $db = new Db();
-                $lists = new TodoLists($db);
-                // get POST data in JSON format
-                $params = jsonDecodeInput();
-
-                // validate required fields
-                if (!isset($params['title'])  || empty(trim($params['title']))) {
-                    http_response_code(400);
-                    $response->status = 'error';
-                    $response->message = 'Title is required';
-                    break;
-                }
-
-                $lists->add($params);
-                $response->status = 'success';
-                $response->message = 'List added';
-
-                break;
-            case 'PATCH':
-                // TODO: validation :)
-                $db = new Db();
-                $lists = new TodoLists($db);
-
-                // get PATCH data in JSON format
-                $params = jsonDecodeInput();
-                $lists->update($args['id'], $params);
-
-                $response->status = 'success';
-                $response->message = $params['title'] . " has been added updated";
-                break;
-            case 'DELETE':
-                // TODO: validation :)
-                $db = new Db();
-                $lists = new TodoLists($db);
-
-                $lists->delete($args['id']);
-                $response->status = 'success';
-                $response->message = $args['id'] . " has been deleted";
-                break;
-            default:
+            case 'GET':
                 // Ensure that the 'id' parameter is set and is a positive integer
                 if (!isset($args['id']) || !ctype_digit($args['id']) || $args['id'] <= 0) {
                     $response->status = 'error';
@@ -93,9 +51,68 @@ switch ($endpoint) {
                 }
 
                 $response->status = 'success';
-                $response->test = 'list';
                 $response->lists = $list;
                 break;
+            case 'POST':
+                $db = new Db();
+                $lists = new TodoLists($db);
+
+                // get POST data in JSON format
+                $params = jsonDecodeInput();
+
+                try {
+                    $lists->add($params);
+                    $response->status = 'success';
+                    $response->message = 'List added';
+                } catch (\Throwable $th) {
+                    http_response_code(400);
+                    $response->status = 'error';
+                    $response->message = $th->getMessage();
+                }
+                break;
+            case 'PATCH':
+                $db = new Db();
+                $lists = new TodoLists($db);
+
+                // get PATCH data in JSON format
+                $params = jsonDecodeInput();
+                try {
+                    $lists->update($args['id'], $params);
+                    $response->status = 'success';
+                    $response->message = "List updated";
+                } catch (\Throwable $th) {
+                    http_response_code(400);
+                    $response->status = 'error';
+                    $response->message = $th->getMessage();
+                }
+                break;
+            case 'DELETE':
+                // Ensure that the 'id' parameter is set and is a positive integer
+                if (!isset($args['id']) || !ctype_digit($args['id']) || $args['id'] <= 0) {
+                    $response->status = 'error';
+                    $response->message = 'Invalid ID parameter';
+                    http_response_code(404);
+                    return;
+                }
+
+                $db = new Db();
+                $lists = new TodoLists($db);
+
+                try {
+                    $lists->delete($args['id']);
+                    $response->status = 'success';
+                    $response->message = $args['id'] . " has been deleted";
+                } catch (\Throwable $th) {
+                    http_response_code(400);
+                    $response->status = 'error';
+                    $response->message = $th->getMessage();
+                }
+                break;
+            default:
+                http_response_code(400);
+                $response->status = 'error';
+                $response->message = 'Invalid request method';
+                return;
         }
 
     default:
