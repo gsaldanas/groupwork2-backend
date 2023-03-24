@@ -9,12 +9,19 @@ $allowedEndpoints = ["todos", "todo"];
 // TODO: documentation
 
 if (!in_array($endpoint, $allowedEndpoints)) {
+    http_response_code(400);
     return;
 }
 
 switch ($endpoint) {
     case 'todos':
-        // TODO: validation :O
+        // Ensure that the request method is GET
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+            http_response_code(400);
+            $response->status = 'error';
+            $response->message = 'Invalid request method';
+            return;
+        }
 
         $db = new Db();
         $todos = new Todos($db);
@@ -33,51 +40,91 @@ switch ($endpoint) {
     case 'todo':
         switch ($_SERVER['REQUEST_METHOD']) {
             case 'GET':
-                // TODO: validation ;)
+                // Ensure that the 'id' parameter is set and is a positive integer
+                if (!isset($args['id']) || !ctype_digit($args['id']) || $args['id'] <= 0) {
+                    $response->status = 'error';
+                    $response->message = 'Invalid ID parameter';
+                    http_response_code(404);
+                    return;
+                }
+
                 $db = new Db();
                 $todos = new Todos($db);
+                $todo = $todos->getById($args['id']);
 
-                $response->todos = $todos->getById($args['id']);
+                // Check if the list exists
+                if (!$todo) {
+                    $response->status = 'error';
+                    $response->message = 'Todo not found';
+                    http_response_code(404);
+                    return;
+                }
+
                 $response->status = 'success';
+                $response->todos = $todo;
                 break;
             case 'POST':
-                // TODO: validation :D
                 $db = new Db();
                 $todos = new Todos($db);
 
                 // get POST data in JSON format
                 $params = jsonDecodeInput();
-                $todos->add($params);
 
-                // TODO: add api call to get list name
-                // $listName = $params['todo_lists_id'];
-
-                $response->status = 'success';
-                $response->message = "has been added";
+                try {
+                    $todos->add($params);
+                    $response->status = 'success';
+                    $response->message = "Todo added";
+                } catch (\Throwable $th) {
+                    http_response_code(400);
+                    $response->status = 'error';
+                    $response->message = $th->getMessage();
+                }
                 break;
             case 'PATCH':
-                // TODO: validation :)
                 $db = new Db();
                 $todos = new Todos($db);
 
                 // get PATCH data in JSON format
                 $params = jsonDecodeInput();
-                $todos->update($args['id'], $params);
+                try {
+                    $todos->update($args['id'], $params);
 
-                $response->status = 'success';
-                $response->message = "has been updated";
+                    $response->status = 'success';
+                    $response->message = "Todo updated";
+                } catch (\Throwable $th) {
+                    http_response_code(400);
+                    $response->status = 'error';
+                    $response->message = $th->getMessage();
+                }
+                break;
                 break;
             case 'DELETE':
-                // TODO: validation :)
+                // Ensure that the 'id' parameter is set and is a positive integer
+                if (!isset($args['id']) || !ctype_digit($args['id']) || $args['id'] <= 0) {
+                    $response->status = 'error';
+                    $response->message = 'Invalid ID parameter';
+                    http_response_code(404);
+                    return;
+                }
+
                 $db = new Db();
                 $todos = new Todos($db);
 
-                $todos->delete($args['id']);
-                $response->status = 'success';
-                $response->message = $args['id'] . " has been deleted";
+                try {
+                    $todos->delete($args['id']);
+                    $response->status = 'success';
+                    $response->message = $args['id'] . " has been deleted";
+                } catch (\Throwable $th) {
+                    http_response_code(400);
+                    $response->status = 'error';
+                    $response->message = $th->getMessage();
+                }
                 break;
             default:
-                // TODO: validation :P
+                http_response_code(400);
+                $response->status = 'error';
+                $response->message = 'Invalid request method';
+                return;
         }
         break;
     default:
